@@ -17,16 +17,8 @@
 # MA 02110-1301, USA.
 #
 
-cmake_minimum_required(VERSION 3.5.0)
-project(demos VERSION 0.1.0 LANGUAGES C CXX)
+add_executable(freeglut_glew freeglut_glew.cc load_shaders.cc)
 
-include(CTest)
-enable_testing()
+#target_include_directories( freeglut_glew )
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
-
-add_subdirectory(vendor)
-add_subdirectory(res)
-add_subdirectory(src)
+target_link_libraries( freeglut_glew libglew_static freeglut_static )

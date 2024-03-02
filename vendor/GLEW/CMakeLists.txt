@@ -17,16 +17,21 @@
 # MA 02110-1301, USA.
 #
 
-cmake_minimum_required(VERSION 3.5.0)
-project(demos VERSION 0.1.0 LANGUAGES C CXX)
+include(FetchContent)
 
-include(CTest)
-enable_testing()
+FetchContent_Declare(
+  glew
+  GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
+  GIT_TAG        origin/master
+)
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+FetchContent_GetProperties(glew)
 
-add_subdirectory(vendor)
-add_subdirectory(res)
-add_subdirectory(src)
+if(NOT glew_POPULATED)
+  FetchContent_Populate(glew)
+
+  add_subdirectory(${glew_SOURCE_DIR} ${glew_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+add_executable(glewinfo ${glew_SOURCE_DIR}/src/glewinfo.c)
+target_link_libraries(glewinfo PRIVATE libglew_static)

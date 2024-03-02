@@ -17,16 +17,19 @@
 # MA 02110-1301, USA.
 #
 
-cmake_minimum_required(VERSION 3.5.0)
-project(demos VERSION 0.1.0 LANGUAGES C CXX)
+include(FetchContent)
 
-include(CTest)
-enable_testing()
+FetchContent_Declare(
+  freeglut
+  GIT_REPOSITORY https://github.com/freeglut/freeglut.git
+  GIT_TAG        origin/master
+)
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+FetchContent_GetProperties(freeglut)
 
-add_subdirectory(vendor)
-add_subdirectory(res)
-add_subdirectory(src)
+if(NOT freeglut_POPULATED)
+  FetchContent_Populate(freeglut)
+
+  add_subdirectory(${freeglut_SOURCE_DIR} ${freeglut_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
