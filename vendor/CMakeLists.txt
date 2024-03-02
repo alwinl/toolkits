@@ -17,6 +17,7 @@
 # MA 02110-1301, USA.
 #
 
+add_subdirectory(GLAD)
 add_subdirectory(GLEW)
 add_subdirectory(FreeGLUT)
 add_subdirectory(GLFW)

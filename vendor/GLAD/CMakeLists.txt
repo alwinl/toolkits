@@ -17,12 +17,20 @@
 # MA 02110-1301, USA.
 #
 
-add_executable(freeglut_glew freeglut_glew.cc load_shaders_glew.cc)
-add_executable(glfw_glew glfw_glew.cc load_shaders_glew.cc)
-add_executable(freeglut_glad freeglut_glad.cc load_shaders_glad.cc)
-add_executable(glfw_glad glfw_glad.cc load_shaders_glad.cc)
+include(FetchContent)
 
-target_link_libraries( freeglut_glew libglew_static freeglut_static )
-target_link_libraries( glfw_glew libglew_static glfw )
-target_link_libraries( freeglut_glad glad_gl_core_33 freeglut_static )
-target_link_libraries( glfw_glad glad_gl_core_33 glfw )
+FetchContent_Declare(
+  glad
+  GIT_REPOSITORY https://github.com/Dav1dde/glad.git
+  GIT_TAG        origin/glad2
+)
+
+FetchContent_GetProperties(glad)
+
+if(NOT glad_POPULATED)
+  FetchContent_Populate(glad)
+
+  add_subdirectory(${glad_SOURCE_DIR}/cmake ${glad_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+glad_add_library(glad_gl_core_33 STATIC API gl:core=3.3)
