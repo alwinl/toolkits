@@ -17,10 +17,18 @@
 # MA 02110-1301, USA.
 #
 
-add_executable(freeglut_glew freeglut_glew.cc load_shaders.cc)
-add_executable(glfw_glew glfw_glew.cc load_shaders.cc)
+include(FetchContent)
 
-#target_include_directories( freeglut_glew )
+FetchContent_Declare(
+  glfw
+  GIT_REPOSITORY https://github.com/glfw/glfw.git
+  GIT_TAG        origin/master
+)
 
-target_link_libraries( freeglut_glew libglew_static freeglut_static )
-target_link_libraries( glfw_glew libglew_static glfw )
+FetchContent_GetProperties(glew)
+
+if(NOT glfw_POPULATED)
+  FetchContent_Populate(glfw)
+
+  add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()

@@ -1,5 +1,5 @@
 /*
- * freeglut_glew.cc Copyright 2024 Alwin Leerling dna.leerling@gmail.com
+ * glfw_glew.cc Copyright 2024 Alwin Leerling dna.leerling@gmail.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-
-#include <array>
 #include <stdexcept>
+#include <array>
 #include <vector>
 
-#include <cstddef>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "load_shaders.h"
 
@@ -32,7 +30,7 @@ class DemoApp
 {
 public:
 	DemoApp( int argc, char **argv );
-	~DemoApp() { instance( this ); };
+	~DemoApp();
 
 	DemoApp( DemoApp & ) = delete;
 	DemoApp( DemoApp && ) = delete;
@@ -43,39 +41,36 @@ public:
 
 private:
 	void scene_setup();
-	static void loop();
+	void loop();
 	void scene_render() const;
 
-	static DemoApp *instance( DemoApp *inst = nullptr )
-	{
-		static DemoApp *the_inst = nullptr;
-
-		if( the_inst == nullptr )
-			the_inst = inst;
-		else if( the_inst == inst )
-			the_inst = nullptr;
-
-		return the_inst;
-	}
-
 	unsigned int vao = -1;
+	GLFWwindow *window = nullptr;
 };
 
-DemoApp::DemoApp( int argc, char **argv )
+DemoApp::DemoApp( int /*argc*/, char ** /*argv*/ )
 {
-	glutInit( &argc, argv );
+	/* Initialize the library */
+	if( glfwInit() == 0 )
+		throw std::runtime_error( "Cannot initialise GLFW" );
 
-	glutInitDisplayMode( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA );
-	glutInitWindowPosition( 100, 100 );
-	glutInitWindowSize( 640, 480 );
-	glutCreateWindow( "Hello from FreeGLUT and GLEW" );
+	/* Create a windowed mode window and its OpenGL context */
+	window = glfwCreateWindow( 640, 480, "Hello from GLFW and GLEW", nullptr, nullptr );
+	if( window == nullptr ) {
+		glfwTerminate();
+		throw std::runtime_error( "Cannot create GLFW Window" );
+	}
 
-	instance( this );
-
-	glutDisplayFunc( []() { ( DemoApp::instance() )->scene_render(); } );
+	/* Make the window's context current */
+	glfwMakeContextCurrent( window );
 
 	if( glewInit() != GLEW_OK )
 		throw std::runtime_error( "Cannot load GLEW" );
+}
+
+DemoApp::~DemoApp()
+{
+	glfwTerminate();
 }
 
 void DemoApp::scene_setup()
@@ -132,19 +127,27 @@ void DemoApp::scene_setup()
 
 void DemoApp::scene_render() const
 {
-	glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
 	glBindVertexArray( vao );
 
 	glDrawArrays( GL_TRIANGLES, 0, 3 );
-
-	glutSwapBuffers();
 }
 
 void DemoApp::loop()
 {
-	glutMainLoop();
+	/* Loop until the user closes the window */
+	while( glfwWindowShouldClose( window ) == 0 ) {
+		/* Render here */
+		glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+		scene_render();
+
+		/* Swap front and back buffers */
+		glfwSwapBuffers( window );
+
+		/* Poll for and process events */
+		glfwPollEvents();
+	}
 }
 
 int DemoApp::run()
@@ -156,7 +159,7 @@ int DemoApp::run()
 	return 0;
 }
 
-int main( int argc, char *argv[] )
+int main( int argc, char **argv )
 {
 	return DemoApp( argc, argv ).run();
 }
