@@ -25,7 +25,9 @@
 #include <stdexcept>
 #include <vector>
 
-#include <GL/glew.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
 
 std::vector<std::string> parse_source( std::string path )
 {
