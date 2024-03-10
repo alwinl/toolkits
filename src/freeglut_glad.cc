@@ -59,6 +59,8 @@ private:
 	}
 
 	unsigned int vao = -1;
+
+	void process_key( unsigned char key, int mouse_x, int mouse_y );
 };
 
 DemoApp::DemoApp( int argc, char **argv )
@@ -75,6 +77,20 @@ DemoApp::DemoApp( int argc, char **argv )
 	glutDisplayFunc( []() { ( DemoApp::instance() )->scene_render(); } );
 
 	gladLoadGL( glutGetProcAddress );
+
+	/* trunk-ignore(clang-tidy/bugprone-easily-swappable-parameters) */
+	auto key_callback = []( unsigned char key, int mouse_x, int mouse_y ) {
+		( DemoApp::instance() )->process_key( key, mouse_x, mouse_y );
+	};
+
+	glutKeyboardFunc( key_callback );
+}
+
+/* trunk-ignore(clang-tidy/readability-convert-member-functions-to-static) */
+void DemoApp::process_key( unsigned char key, int /*mouse_x*/, int /*mouse_y*/ )
+{
+	if( key == 0x1B )
+		glutLeaveMainLoop();
 }
 
 void DemoApp::scene_setup()
