@@ -137,7 +137,17 @@ void DemoApp::loop()
 {
 	/* Loop until the user closes the window */
 	while( glfwWindowShouldClose( window ) == 0 ) {
+
+		/* Poll for and process events */
+		glfwPollEvents();
+
 		/* Render here */
+		int display_w = 0;
+		int display_h = 0;
+
+		glfwGetFramebufferSize( window, &display_w, &display_h );
+		glViewport( 0, 0, display_w, display_h );
+
 		glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -145,9 +155,6 @@ void DemoApp::loop()
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers( window );
-
-		/* Poll for and process events */
-		glfwPollEvents();
 	}
 }
 
