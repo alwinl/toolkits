@@ -17,19 +17,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <stdexcept>
 #include <array>
+#include <stdexcept>
 #include <vector>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 #include "load_shaders.h"
-
-void glfw_error_callback( int /*code*/, const char *description )
-{
-	throw std::runtime_error( description );
-}
+#include "scene.h"
 
 class DemoApp
 {
@@ -46,17 +42,20 @@ public:
 
 private:
 	void scene_setup();
-	void loop();
 	void scene_render() const;
 
 	unsigned int vao = -1;
-	GLFWwindow *window = nullptr;
 
 	void process_key( int key, int scancode, int action, int mods );
+
+	GLFWwindow *window = nullptr;
 };
 
 DemoApp::DemoApp( int /*argc*/, char ** /*argv*/ )
 {
+	auto glfw_error_callback = []( int /*code*/, const char *description )
+		{ throw std::runtime_error( description ); };
+
 	glfwSetErrorCallback( glfw_error_callback );
 
 	/* Initialize the library */
@@ -79,8 +78,7 @@ DemoApp::DemoApp( int /*argc*/, char ** /*argv*/ )
 	glfwMakeContextCurrent( window );
 	glfwSwapInterval( 1 );
 
-	const int version = gladLoadGL( glfwGetProcAddress );
-	if( version == 0 )
+	if( gladLoadGL( glfwGetProcAddress ) == 0 )
 		throw std::runtime_error( "Cannot load GL pointers" );
 
 	glfwSetWindowUserPointer( window, this );
@@ -114,54 +112,7 @@ void DemoApp::process_key( int key, int /*scancode*/, int action, int /*mods*/ )
 
 void DemoApp::scene_setup()
 {
-	constexpr unsigned int position_index = 0;
-	constexpr unsigned int colour_index = 1;
-
-	struct vertex {
-		std::array<float, 3> position;
-		std::array<float, 3> colour;
-	};
-
-	struct attribute_description {
-		unsigned int index;
-		int component_count;
-		unsigned int component_type;
-		unsigned char is_normalized;
-		size_t offset;
-	};
-
-	const std::vector<attribute_description> vertex_description = {
-		{ position_index, 3, GL_FLOAT, GL_FALSE, offsetof( vertex, position ) }, // position attribute
-		{ colour_index, 3, GL_FLOAT, GL_FALSE, offsetof( vertex, colour ) }		 // colour attribute
-	};
-
-	std::vector<vertex> vertices = { { { -1.0F, -1.0F, 0.0F }, { 1.0F, 0.0F, 0.0F } },
-									 { { 0.0F, 1.0F, 0.0F }, { 0.0F, 1.0F, 0.0F } },
-									 { { 1.0F, -1.0F, 0.0F }, { 0.0F, 0.0F, 1.0F } } };
-
-	const unsigned int program_id = load_program( "../res/shaders/simple.glsl" );
-	unsigned int vertex_buffer = -1;
-
-	glGenVertexArrays( 1, &vao );
-	glBindVertexArray( vao );
-
-	glGenBuffers( 1, &vertex_buffer );
-	glBindBuffer( GL_ARRAY_BUFFER, vertex_buffer );
-	glBufferData( GL_ARRAY_BUFFER, static_cast<int64_t>( vertices.size() * sizeof( vertex ) ), vertices.data(),
-				  GL_STATIC_DRAW );
-
-	for( const auto &attribute : vertex_description ) {
-		glEnableVertexAttribArray( attribute.index );
-		glVertexAttribPointer( attribute.index, attribute.component_count, attribute.component_type,
-							   attribute.is_normalized, sizeof( vertex ),
-							   /* trunk-ignore(clang-tidy/cppcoreguidelines-pro-type-reinterpret-cast) */
-							   /* trunk-ignore(clang-tidy/performance-no-int-to-ptr) */
-							   reinterpret_cast<const void *>( attribute.offset ) );
-	}
-
-	glUseProgram( program_id );
-
-	glBindVertexArray( 0 );
+	vao = make_scene();
 }
 
 void DemoApp::scene_render() const
@@ -171,8 +122,10 @@ void DemoApp::scene_render() const
 	glDrawArrays( GL_TRIANGLES, 0, 3 );
 }
 
-void DemoApp::loop()
+int DemoApp::run()
 {
+	scene_setup();
+
 	/* Loop until the user closes the window */
 	while( glfwWindowShouldClose( window ) == 0 ) {
 
@@ -194,13 +147,6 @@ void DemoApp::loop()
 		/* Swap front and back buffers */
 		glfwSwapBuffers( window );
 	}
-}
-
-int DemoApp::run()
-{
-	scene_setup();
-
-	loop();
 
 	return 0;
 }

@@ -17,10 +17,10 @@
 # MA 02110-1301, USA.
 #
 
-add_executable(freeglut_glew freeglut_glew.cc load_shaders.cc)
-add_executable(glfw_glew glfw_glew.cc load_shaders.cc)
-add_executable(freeglut_glad freeglut_glad.cc load_shaders.cc)
-add_executable(glfw_glad glfw_glad.cc load_shaders.cc)
+add_executable(freeglut_glew freeglut_glew.cc load_shaders.cc scene.cc)
+add_executable(glfw_glew glfw_glew.cc load_shaders.cc scene.cc)
+add_executable(freeglut_glad freeglut_glad.cc load_shaders.cc scene.cc)
+add_executable(glfw_glad glfw_glad.cc load_shaders.cc scene.cc)
 
 target_include_directories( freeglut_glew PRIVATE ${freeglut_SOURCE_DIR}/include ${glew_SOURCE_DIR}/include )
 target_include_directories( freeglut_glad PRIVATE ${freeglut_SOURCE_DIR}/include)

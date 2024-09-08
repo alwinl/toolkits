@@ -17,22 +17,21 @@
  * MA 02110-1301, USA.
  */
 
-#include <glad/gl.h>
-#include <GL/freeglut.h>
-
 #include <array>
 #include <stdexcept>
 #include <vector>
 
-#include <cstddef>
+#include <glad/gl.h>
+#include <GL/freeglut.h>
 
 #include "load_shaders.h"
+#include "scene.h"
 
 class DemoApp
 {
 public:
 	DemoApp( int argc, char **argv );
-	~DemoApp() { instance( this ); };
+	~DemoApp();
 
 	DemoApp( DemoApp & ) = delete;
 	DemoApp( DemoApp && ) = delete;
@@ -43,24 +42,13 @@ public:
 
 private:
 	void scene_setup();
-	static void loop();
 	void scene_render() const;
-
-	static DemoApp *instance( DemoApp *inst = nullptr )
-	{
-		static DemoApp *the_inst = nullptr;
-
-		if( the_inst == nullptr )
-			the_inst = inst;
-		else if( the_inst == inst )
-			the_inst = nullptr;
-
-		return the_inst;
-	}
 
 	unsigned int vao = -1;
 
 	void process_key( unsigned char key, int mouse_x, int mouse_y );
+
+	static DemoApp *instance( DemoApp *inst = nullptr );
 };
 
 DemoApp::DemoApp( int argc, char **argv )
@@ -76,7 +64,8 @@ DemoApp::DemoApp( int argc, char **argv )
 
 	glutDisplayFunc( []() { ( DemoApp::instance() )->scene_render(); } );
 
-	gladLoadGL( glutGetProcAddress );
+	if( gladLoadGL( glutGetProcAddress ) == 0 )
+		throw std::runtime_error( "Cannot load GL pointers" );
 
 	/* trunk-ignore(clang-tidy/bugprone-easily-swappable-parameters) */
 	auto key_callback = []( unsigned char key, int mouse_x, int mouse_y ) {
@@ -84,6 +73,23 @@ DemoApp::DemoApp( int argc, char **argv )
 	};
 
 	glutKeyboardFunc( key_callback );
+}
+
+DemoApp *DemoApp::instance( DemoApp *inst )
+{
+	static DemoApp *the_inst = nullptr;
+
+	if( the_inst == nullptr )
+		the_inst = inst;
+	else if( the_inst == inst )
+		the_inst = nullptr;
+
+	return the_inst;
+}
+
+DemoApp::~DemoApp()
+{
+	instance( this );
 }
 
 /* trunk-ignore(clang-tidy/readability-convert-member-functions-to-static) */
@@ -95,54 +101,7 @@ void DemoApp::process_key( unsigned char key, int /*mouse_x*/, int /*mouse_y*/ )
 
 void DemoApp::scene_setup()
 {
-	constexpr unsigned int position_index = 0;
-	constexpr unsigned int colour_index = 1;
-
-	struct vertex {
-		std::array<float, 3> position;
-		std::array<float, 3> colour;
-	};
-
-	struct attribute_description {
-		unsigned int index;
-		int component_count;
-		unsigned int component_type;
-		unsigned char is_normalized;
-		size_t offset;
-	};
-
-	const std::vector<attribute_description> vertex_description = {
-		{ position_index, 3, GL_FLOAT, GL_FALSE, offsetof( vertex, position ) }, // position attribute
-		{ colour_index, 3, GL_FLOAT, GL_FALSE, offsetof( vertex, colour ) }		 // colour attribute
-	};
-
-	std::vector<vertex> vertices = { { { -1.0F, -1.0F, 0.0F }, { 1.0F, 0.0F, 0.0F } },
-									 { { 0.0F, 1.0F, 0.0F }, { 0.0F, 1.0F, 0.0F } },
-									 { { 1.0F, -1.0F, 0.0F }, { 0.0F, 0.0F, 1.0F } } };
-
-	const unsigned int program_id = load_program( "../res/shaders/simple.glsl" );
-	unsigned int vertex_buffer = -1;
-
-	glGenVertexArrays( 1, &vao );
-	glBindVertexArray( vao );
-
-	glGenBuffers( 1, &vertex_buffer );
-	glBindBuffer( GL_ARRAY_BUFFER, vertex_buffer );
-	glBufferData( GL_ARRAY_BUFFER, static_cast<int64_t>( vertices.size() * sizeof( vertex ) ), vertices.data(),
-				  GL_STATIC_DRAW );
-
-	for( const auto &attribute : vertex_description ) {
-		glEnableVertexAttribArray( attribute.index );
-		glVertexAttribPointer( attribute.index, attribute.component_count, attribute.component_type,
-							   attribute.is_normalized, sizeof( vertex ),
-							   /* trunk-ignore(clang-tidy/cppcoreguidelines-pro-type-reinterpret-cast) */
-							   /* trunk-ignore(clang-tidy/performance-no-int-to-ptr) */
-							   reinterpret_cast<const void *>( attribute.offset ) );
-	}
-
-	glUseProgram( program_id );
-
-	glBindVertexArray( 0 );
+	vao = make_scene();
 }
 
 void DemoApp::scene_render() const
@@ -162,16 +121,11 @@ void DemoApp::scene_render() const
 	glutSwapBuffers();
 }
 
-void DemoApp::loop()
-{
-	glutMainLoop();
-}
-
 int DemoApp::run()
 {
 	scene_setup();
 
-	loop();
+	glutMainLoop();
 
 	return 0;
 }
