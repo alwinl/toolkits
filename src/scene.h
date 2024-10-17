@@ -18,3 +18,4 @@
  */
 
 unsigned int make_scene();
+void render_scene( unsigned int vao, int width, int height );

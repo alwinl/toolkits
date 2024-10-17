@@ -55,7 +55,7 @@ unsigned int make_scene()
 
 	const unsigned int program_id = load_program( "../res/shaders/simple.glsl" );
 	unsigned int vertex_buffer = -1;
-	unsigned int vao;
+	unsigned int vao = -1;
 
 	glGenVertexArrays( 1, &vao );
 	glBindVertexArray( vao );
@@ -79,4 +79,16 @@ unsigned int make_scene()
 	glBindVertexArray( 0 );
 
 	return vao;
+}
+
+void render_scene( unsigned int vao, int width, int height )
+{
+	glViewport( 0, 0, width, height );
+
+	glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+	glBindVertexArray( vao );
+
+	glDrawArrays( GL_TRIANGLES, 0, 3 );
 }

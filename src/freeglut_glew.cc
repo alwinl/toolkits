@@ -109,14 +109,15 @@ void DemoApp::scene_render() const
 	const int display_w = glutGet( GLUT_WINDOW_WIDTH );
 	const int display_h = glutGet( GLUT_WINDOW_HEIGHT );
 
-	glViewport( 0, 0, display_w, display_h );
+	render_scene( vao, display_w, display_h );
+	// glViewport( 0, 0, display_w, display_h );
 
-	glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	// glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
+	// glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	glBindVertexArray( vao );
+	// glBindVertexArray( vao );
 
-	glDrawArrays( GL_TRIANGLES, 0, 3 );
+	// glDrawArrays( GL_TRIANGLES, 0, 3 );
 
 	glutSwapBuffers();
 }

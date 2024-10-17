@@ -42,7 +42,7 @@ public:
 
 private:
 	void scene_setup();
-	void scene_render() const;
+	// void scene_render() const;
 
 	unsigned int vao = -1;
 
@@ -115,12 +115,12 @@ void DemoApp::scene_setup()
 	vao = make_scene();
 }
 
-void DemoApp::scene_render() const
-{
-	glBindVertexArray( vao );
+// void DemoApp::scene_render() const
+// {
+// 	glBindVertexArray( vao );
 
-	glDrawArrays( GL_TRIANGLES, 0, 3 );
-}
+// 	glDrawArrays( GL_TRIANGLES, 0, 3 );
+// }
 
 int DemoApp::run()
 {
@@ -137,12 +137,14 @@ int DemoApp::run()
 		int display_h = 0;
 
 		glfwGetFramebufferSize( window, &display_w, &display_h );
-		glViewport( 0, 0, display_w, display_h );
 
-		glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		render_scene( vao, display_w, display_h );
+		// glViewport( 0, 0, display_w, display_h );
 
-		scene_render();
+		// glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
+		// glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+		// scene_render();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers( window );
