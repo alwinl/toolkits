@@ -18,3 +18,5 @@
 #
 
 add_subdirectory(shaders)
+
+file(COPY start_all.sh DESTINATION ${CMAKE_BINARY_DIR}/src)
