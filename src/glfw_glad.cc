@@ -17,14 +17,11 @@
  * MA 02110-1301, USA.
  */
 
-#include <array>
 #include <stdexcept>
-#include <vector>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
-#include "load_shaders.h"
 #include "scene.h"
 
 class DemoApp
@@ -41,20 +38,15 @@ public:
 	int run();
 
 private:
-	void scene_setup();
-	// void scene_render() const;
-
-	unsigned int vao = -1;
+	GLFWwindow *window = nullptr;
+	DemoScene scene;
 
 	void process_key( int key, int scancode, int action, int mods );
-
-	GLFWwindow *window = nullptr;
 };
 
-DemoApp::DemoApp( int /*argc*/, char ** /*argv*/ )
+DemoApp::DemoApp( int /*argc*/, char ** /*argv*/ ) : scene()
 {
-	auto glfw_error_callback = []( int /*code*/, const char *description )
-		{ throw std::runtime_error( description ); };
+	auto glfw_error_callback = []( int /*code*/, const char *description ) { throw std::runtime_error( description ); };
 
 	glfwSetErrorCallback( glfw_error_callback );
 
@@ -110,21 +102,9 @@ void DemoApp::process_key( int key, int /*scancode*/, int action, int /*mods*/ )
 	}
 }
 
-void DemoApp::scene_setup()
-{
-	vao = make_scene();
-}
-
-// void DemoApp::scene_render() const
-// {
-// 	glBindVertexArray( vao );
-
-// 	glDrawArrays( GL_TRIANGLES, 0, 3 );
-// }
-
 int DemoApp::run()
 {
-	scene_setup();
+	scene.make_scene();
 
 	/* Loop until the user closes the window */
 	while( glfwWindowShouldClose( window ) == 0 ) {
@@ -138,13 +118,7 @@ int DemoApp::run()
 
 		glfwGetFramebufferSize( window, &display_w, &display_h );
 
-		render_scene( vao, display_w, display_h );
-		// glViewport( 0, 0, display_w, display_h );
-
-		// glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
-		// glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-		// scene_render();
+		scene.render_scene( display_w, display_h );
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers( window );

@@ -17,14 +17,11 @@
  * MA 02110-1301, USA.
  */
 
-#include <array>
 #include <stdexcept>
-#include <vector>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include "load_shaders.h"
 #include "scene.h"
 
 class DemoApp
@@ -41,17 +38,16 @@ public:
 	int run();
 
 private:
-	void scene_setup();
-	void scene_render() const;
+	DemoScene scene;
 
-	unsigned int vao = -1;
+	void scene_render();
 
 	void process_key( unsigned char key, int mouse_x, int mouse_y );
 
 	static DemoApp *instance( DemoApp *inst = nullptr );
 };
 
-DemoApp::DemoApp( int argc, char **argv )
+DemoApp::DemoApp( int argc, char **argv ) : scene()
 {
 	glutInit( &argc, argv );
 
@@ -99,32 +95,19 @@ void DemoApp::process_key( unsigned char key, int /*mouse_x*/, int /*mouse_y*/ )
 		glutLeaveMainLoop();
 }
 
-void DemoApp::scene_setup()
-{
-	vao = make_scene();
-}
-
-void DemoApp::scene_render() const
+void DemoApp::scene_render()
 {
 	const int display_w = glutGet( GLUT_WINDOW_WIDTH );
 	const int display_h = glutGet( GLUT_WINDOW_HEIGHT );
 
-	render_scene( vao, display_w, display_h );
-	// glViewport( 0, 0, display_w, display_h );
-
-	// glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
-	// glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	// glBindVertexArray( vao );
-
-	// glDrawArrays( GL_TRIANGLES, 0, 3 );
+	scene.render_scene( display_w, display_h );
 
 	glutSwapBuffers();
 }
 
 int DemoApp::run()
 {
-	scene_setup();
+	scene.make_scene();
 
 	glutMainLoop();
 

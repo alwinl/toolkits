@@ -17,5 +17,13 @@
  * MA 02110-1301, USA.
  */
 
-unsigned int make_scene();
-void render_scene( unsigned int vao, int width, int height );
+class DemoScene
+{
+public:
+	void make_scene();
+	void render_scene( int width, int height ) const;
+
+private:
+	unsigned int vao;
+	unsigned int program_id;
+};
