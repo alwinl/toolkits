@@ -19,9 +19,9 @@ void main()
 
 in vec3 a_colour;
 
-out vec3 color;
+out vec4 color;
 
 void main()
 {
-  color = a_colour;
+  color = vec4(a_colour, 1.0);
 }

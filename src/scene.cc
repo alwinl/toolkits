@@ -107,7 +107,7 @@ unsigned int make_program( std::vector<unsigned int> shader_ids )
 	if( program_linked == GL_FALSE ) {
 
 		int size = 0;
-		glGetShaderiv( program_id, GL_INFO_LOG_LENGTH, &size );
+		glGetProgramiv( program_id, GL_INFO_LOG_LENGTH, &size );
 
 		if( size == 0 )
 			throw std::runtime_error( "Unknown program link error" );
@@ -183,7 +183,7 @@ void DemoScene::render_scene( int width, int height ) const
 {
 	glViewport( 0, 0, width, height );
 
-	glClearColor( 0.0F, 0.0F, 0.6F, 0.0F );
+	glClearColor( 0.0F, 0.0F, 0.6F, 1.0F );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	glBindVertexArray( vao );
