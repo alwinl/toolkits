@@ -17,30 +17,26 @@
 # MA 02110-1301, USA.
 #
 
-# set(OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL 3.3 REQUIRED)
+find_package(OpenGL REQUIRED)
 
 add_executable(freeglut_glew freeglut_glew.cc scene.cc)
 add_executable(glfw_glew glfw_glew.cc scene.cc)
 add_executable(freeglut_glad freeglut_glad.cc scene.cc)
 add_executable(glfw_glad glfw_glad.cc scene.cc)
 
-target_include_directories( freeglut_glew PRIVATE ${freeglut_SOURCE_DIR}/include ${glew_SOURCE_DIR}/include )
-target_include_directories( freeglut_glad PRIVATE ${freeglut_SOURCE_DIR}/include)
-target_include_directories( glfw_glew PRIVATE ${glfw_SOURCE_DIR}/include ${glew_SOURCE_DIR}/include )
-target_include_directories( glfw_glad PRIVATE ${glfw_SOURCE_DIR}/include)
-
-target_link_libraries( freeglut_glew freeglut_static libglew_static OpenGL::GL)
-target_link_libraries( freeglut_glad freeglut_static glad_gl_core_33 OpenGL::GL)
-# target_link_libraries( glfw_glew ${OPENGL_LIBRARIES} glfw libglew_static ${OPENGL_gl_LIBRARY})
-# target_link_libraries( glfw_glad ${OPENGL_LIBRARIES} glfw glad_gl_core_33 ${OPENGL_gl_LIBRARY} )
-#target_link_libraries( glfw_glew ${OPENGL_LIBRARIES} glfw libglew_static ${OPENGL_opengl_LIBRARY} ${OPENGL_glx_LIBRARY})
-#target_link_libraries( glfw_glad ${OPENGL_LIBRARIES} glfw glad_gl_core_33 ${OPENGL_opengl_LIBRARY} ${OPENGL_glx_LIBRARY} )
-
 if(WIN32)
+    target_include_directories( freeglut_glew PRIVATE ${freeglut_SOURCE_DIR}/include ${glew_SOURCE_DIR}/include )
+    target_include_directories( freeglut_glad PRIVATE ${freeglut_SOURCE_DIR}/include)
+    target_include_directories( glfw_glew PRIVATE ${glfw_SOURCE_DIR}/include ${glew_SOURCE_DIR}/include )
+    target_include_directories( glfw_glad PRIVATE ${glfw_SOURCE_DIR}/include)
+
+    target_link_libraries( freeglut_glew freeglut_static libglew_static OpenGL::GL)
+    target_link_libraries( freeglut_glad freeglut_static glad_gl_core_33 OpenGL::GL)
     target_link_libraries( glfw_glew glfw libglew_static OpenGL::GL )
     target_link_libraries( glfw_glad glfw glad_gl_core_33 OpenGL::GL )
 else()
-    target_link_libraries( glfw_glew glfw libglew_static OpenGL::OpenGL OpenGL::GLX )
-    target_link_libraries( glfw_glad glfw glad_gl_core_33 OpenGL::OpenGL OpenGL::GLX )
+    target_link_libraries( freeglut_glew freeglut_static libglew_static )
+    target_link_libraries( freeglut_glad freeglut_static glad_gl_core_33 )
+    target_link_libraries( glfw_glew glfw libglew_static OpenGL::OpenGL )
+    target_link_libraries( glfw_glad glfw glad_gl_core_33 OpenGL::OpenGL )
 endif()
