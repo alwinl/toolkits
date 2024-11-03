@@ -25,9 +25,15 @@
 
 #include "scene.h"
 
-#define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
-#include <GL/glext.h>
+// #define GL_GLEXT_PROTOTYPES
+// #include <GL/gl.h>
+// #include <GL/glext.h>
+
+#ifdef GLAD_LOADER
+#include <glad/gl.h>
+#else
+#include <GL/glew.h>
+#endif
 
 std::vector<std::string> parse_source( std::string path )
 {
