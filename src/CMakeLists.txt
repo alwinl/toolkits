@@ -24,14 +24,14 @@ add_executable(glfw_glew glfw_glew.cc scene.cc)
 add_executable(freeglut_glad freeglut_glad.cc scene.cc)
 add_executable(glfw_glad glfw_glad.cc scene.cc)
 
+target_compile_definitions( glfw_glad PRIVATE GLAD_LOADER )
+target_compile_definitions( freeglut_glad PRIVATE GLAD_LOADER )
+
 if(WIN32)
     target_include_directories( freeglut_glew PRIVATE ${freeglut_SOURCE_DIR}/include ${glew_SOURCE_DIR}/include )
     target_include_directories( freeglut_glad PRIVATE ${freeglut_SOURCE_DIR}/include)
     target_include_directories( glfw_glew PRIVATE ${glfw_SOURCE_DIR}/include ${glew_SOURCE_DIR}/include )
     target_include_directories( glfw_glad PRIVATE ${glfw_SOURCE_DIR}/include)
-
-    target_compile_definitions( glfw_glad PRIVATE GLAD_LOADER )
-    target_compile_definitions( freeglut_glad PRIVATE GLAD_LOADER )
 
     target_link_libraries( freeglut_glew freeglut_static libglew_static OpenGL::GL)
     target_link_libraries( freeglut_glad freeglut_static glad_gl_core_33 OpenGL::GL)
