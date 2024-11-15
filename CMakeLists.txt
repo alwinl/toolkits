@@ -27,6 +27,8 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
+cmake_policy( SET CMP0072 NEW )
+
 add_subdirectory(vendor)
 add_subdirectory(res)
 add_subdirectory(src)
