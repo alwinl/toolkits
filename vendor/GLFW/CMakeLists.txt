@@ -25,10 +25,4 @@ FetchContent_Declare(
   GIT_TAG        origin/master
 )
 
-FetchContent_GetProperties(glew)
-
-if(NOT glfw_POPULATED)
-  FetchContent_Populate(glfw)
-
-  add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
+FetchContent_MakeAvailable( glfw )

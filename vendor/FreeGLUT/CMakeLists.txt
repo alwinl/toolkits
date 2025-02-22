@@ -25,11 +25,5 @@ FetchContent_Declare(
   GIT_TAG        origin/master
 )
 
-FetchContent_GetProperties(freeglut)
-
-if(NOT freeglut_POPULATED)
-  FetchContent_Populate(freeglut)
-
-  add_subdirectory(${freeglut_SOURCE_DIR} ${freeglut_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
+FetchContent_MakeAvailable( freeglut )
 

@@ -25,12 +25,8 @@ FetchContent_Declare(
   GIT_TAG        origin/glad2
 )
 
-FetchContent_GetProperties(glad)
+FetchContent_MakeAvailable( glad )
 
-if(NOT glad_POPULATED)
-  FetchContent_Populate(glad)
-
-  add_subdirectory(${glad_SOURCE_DIR}/cmake ${glad_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
+add_subdirectory(${glad_SOURCE_DIR}/cmake ${glad_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 glad_add_library(glad_gl_core_33 STATIC API gl:core=3.3)
