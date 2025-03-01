@@ -170,7 +170,7 @@ RequiresClausePosition: OwnLine
 RequiresExpressionIndentation: OuterScope
 SeparateDefinitionBlocks: Leave
 ShortNamespaceLines: 1
-SortIncludes:    false
+SortIncludes:    CaseSensitive
 SortJavaStaticImport: Before
 SortUsingDeclarations: LexicographicNumeric
 SpaceAfterCStyleCast: false
@@ -222,4 +222,3 @@ WhitespaceSensitiveMacros:
   - PP_STRINGIZE
   - STRINGIZE
 ...
-
