@@ -25,5 +25,7 @@ FetchContent_Declare(
   GIT_TAG        origin/master
 )
 
+set(FREEGLUT_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable( freeglut )
 

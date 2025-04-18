@@ -27,5 +27,5 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable( glew )
 
-add_executable(glewinfo ${glew_SOURCE_DIR}/src/glewinfo.c)
-target_link_libraries(glewinfo PRIVATE libglew_static)
+# add_executable(glewinfo ${glew_SOURCE_DIR}/src/glewinfo.c)
+# target_link_libraries(glewinfo PRIVATE libglew_static)
