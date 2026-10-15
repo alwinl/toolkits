@@ -50,6 +50,8 @@ DemoApp::DemoApp( int /*argc*/, char ** /*argv*/ ) : scene()
 
 	glfwSetErrorCallback( glfw_error_callback );
 
+	glfwInitHint( GLFW_PLATFORM, GLFW_PLATFORM_X11 );
+
 	/* Initialize the library */
 	if( glfwInit() == 0 )
 		throw std::runtime_error( "Cannot initialise GLFW" );
@@ -69,6 +71,8 @@ DemoApp::DemoApp( int /*argc*/, char ** /*argv*/ ) : scene()
 	/* Make the window's context current */
 	glfwMakeContextCurrent( window );
 	glfwSwapInterval( 1 );
+
+	glewExperimental = GL_TRUE;
 
 	if( glewInit() != GLEW_OK )
 		throw std::runtime_error( "Cannot load GLEW" );
