@@ -18,7 +18,7 @@
 #
 
 cmake_minimum_required(VERSION 3.10)
-project(demos VERSION 0.1.0 LANGUAGES C CXX)
+project(toolkits VERSION 0.1.0 LANGUAGES C CXX)
 
 include(CTest)
 enable_testing()
